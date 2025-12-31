@@ -3,226 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistema de Gestão Integrado</title>
+    <title>JM System Supreme</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 1. VARIÁVEIS E RESET --- */
+        /* --- ESTILOS GERAIS --- */
         :root {
-            --primary: #d32f2f; /* Cor padrão, será alterada pelo Setup */
-            --dark: #121212;
-            --surface: #1e1e1e;
-            --surface-light: #2c2c2c;
-            --text: #e0e0e0;
-            --success: #2e7d32;
-            --warning: #f57c00;
-            --danger: #c62828;
-            --border: #444;
+            --primary: #d32f2f; /* Será alterado pelo setup */
+            --dark: #121212; --surface: #1e1e1e; --surface-light: #2c2c2c;
+            --text: #e0e0e0; --success: #2e7d32; --warning: #f57c00; --danger: #c62828; --border: #444;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background-color: var(--dark); color: var(--text); height: 100vh; overflow: hidden; display: flex; font-size: 16px; }
 
-        /* --- 2. UTILITÁRIOS --- */
-        .hidden { display: none !important; }
-        .flex { display: flex; gap: 10px; }
-        .col { flex-direction: column; }
-        .w-full { width: 100%; }
-        .mt-2 { margin-top: 10px; }
-        .mb-2 { margin-bottom: 10px; }
-        .text-right { text-align: right; }
-        .text-center { text-align: center; }
-        .bold { font-weight: bold; }
-        .text-muted { color: #888; font-size: 0.85rem; }
-        .wrap-flex { flex-wrap: wrap; }
-        .align-center { align-items: center; }
-        .align-end { align-items: flex-end; }
-        .space-between { justify-content: space-between; }
+        /* SCROLL & UTILS */
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--surface); } ::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+        .hidden { display: none !important; } .flex { display: flex; gap: 10px; } .col { flex-direction: column; } .w-full { width: 100%; }
+        .mt-2 { margin-top: 10px; } .text-right { text-align: right; } .text-center { text-align: center; } .bold { font-weight: bold; }
+        .text-muted { color: #888; font-size: 0.85rem; } .wrap-flex { flex-wrap: wrap; } .align-end { align-items: flex-end; } .space-between { justify-content: space-between; }
 
-        /* --- 3. COMPONENTES UI --- */
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--surface); }
-        ::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
-
-        /* Botões */
+        /* UI ELEMENTS */
         button { cursor: pointer; border: none; border-radius: 4px; padding: 12px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
         button:hover { opacity: 0.9; transform: translateY(-1px); }
-        button:active { transform: translateY(0); }
-        
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
+        .btn-info { background: #0288d1; color: white; }
         .btn-ghost { background: transparent; border: 1px solid #666; color: #ccc; }
         .btn-sm { padding: 6px 10px; font-size: 0.75rem; }
-
-        /* Inputs */
+        
         input, select { background: var(--surface-light); border: 1px solid #555; color: white; padding: 12px; border-radius: 4px; width: 100%; outline: none; font-size: 1rem; }
         input:focus { border-color: var(--primary); }
         label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #aaa; }
-        input[type="color"] { height: 45px; padding: 2px; cursor: pointer; }
 
-        /* --- 4. LAYOUT DE AUTENTICAÇÃO (LOGIN/SETUP) --- */
-        #auth-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #000, #1a1a1a); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 15px; }
-        .auth-box { background: var(--surface); padding: 30px; border-radius: 10px; width: 100%; max-width: 450px; border-top: 5px solid var(--primary); box-shadow: 0 20px 60px rgba(0,0,0,0.8); animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .brand-title { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 5px; text-transform: uppercase; color: #fff; }
-        .brand-title span { color: var(--primary); }
-
-        /* --- 5. LAYOUT DA APLICAÇÃO --- */
+        /* LAYOUT */
+        #auth-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #000, #111); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 15px; }
+        .auth-box { background: var(--surface); padding: 30px; border-radius: 10px; width: 100%; max-width: 450px; border-top: 5px solid var(--primary); box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        
         #app-screen { width: 100%; display: flex; }
-
-        /* Sidebar (Menu) Fixa com Scroll Interno */
-        .sidebar { 
-            width: 270px; background: var(--surface); border-right: 1px solid #333; 
-            height: 100vh; display: flex; flex-direction: column; 
-            z-index: 1000; transition: transform 0.3s ease; 
-        }
-        
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        .brand-text { font-size: 1.2rem; font-weight: 900; color: #fff; text-transform: uppercase; border-left: 4px solid var(--primary); padding-left: 10px; line-height: 1.2; }
-        
-        .sidebar-scroll { flex: 1; overflow-y: auto; padding: 15px; } /* Área rolavel */
-        .sidebar-footer { padding: 15px; border-top: 1px solid #333; background: var(--surface); } /* Área fixa rodapé */
-
-        .user-panel { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #333; }
-        
+        .sidebar { width: 270px; background: var(--surface); border-right: 1px solid #333; height: 100vh; display: flex; flex-direction: column; z-index: 1000; transition: transform 0.3s ease; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; }
+        .brand-text { font-size: 1.2rem; font-weight: 900; color: #fff; text-transform: uppercase; border-left: 4px solid var(--primary); padding-left: 10px; }
+        .sidebar-scroll { flex: 1; overflow-y: auto; padding: 15px; }
+        .sidebar-footer { padding: 15px; border-top: 1px solid #333; background: var(--surface); }
         .menu-btn { background: none; color: #aaa; text-align: left; padding: 12px; border-radius: 6px; margin-bottom: 5px; width: 100%; display: flex; align-items: center; }
-        .menu-btn i { width: 30px; text-align: center; margin-right: 10px; font-size: 1.1rem; }
+        .menu-btn i { width: 25px; text-align: center; margin-right: 10px; }
         .menu-btn:hover, .menu-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .menu-btn.active { font-weight: bold; }
 
-        /* Conteúdo Principal */
-        .content { flex: 1; padding: 20px; overflow-y: auto; background: var(--dark); position: relative; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; background: var(--dark); position: sticky; top: 0; z-index: 900; }
+        .content { flex: 1; padding: 20px; overflow-y: auto; background: var(--dark); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; position: sticky; top: 0; background: var(--dark); z-index: 900; }
         .mobile-toggle { display: none; background: none; border: 1px solid #555; color: white; width: 40px; height: 40px; border-radius: 5px; font-size: 1.2rem; }
 
-        /* --- 6. ELEMENTOS ESPECÍFICOS --- */
-        /* Cards */
+        /* CARDS & TABELAS */
         .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .card { background: var(--surface); padding: 20px; border-radius: 8px; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .card { background: var(--surface); padding: 20px; border-radius: 8px; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.2); margin-bottom: 20px; }
         .card h3 { color: #aaa; font-size: 0.85rem; margin-bottom: 10px; text-transform: uppercase; }
-        .card .val { font-size: 1.6rem; font-weight: bold; color: #fff; word-break: break-word; }
-
-        /* Tabelas */
+        .card .val { font-size: 1.6rem; font-weight: bold; color: #fff; }
         .table-responsive { overflow-x: auto; border: 1px solid #333; border-radius: 5px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; font-size: 0.9rem; }
-        th { background: #252525; color: var(--primary); text-transform: uppercase; font-size: 0.8rem; font-weight: bold; }
-        
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; white-space: nowrap; }
-        .in { color: #81c784; background: rgba(46, 125, 50, 0.15); border: 1px solid #2e7d32; }
-        .out { color: #e57373; background: rgba(198, 40, 40, 0.15); border: 1px solid #c62828; }
+        th { background: #252525; color: var(--primary); font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .in { color: #81c784; background: rgba(46,125,50,0.15); border: 1px solid #2e7d32; }
+        .out { color: #e57373; background: rgba(198,40,40,0.15); border: 1px solid #c62828; }
 
-        /* Projetista (Blueprint) */
-        .blueprint-container { 
-            background-color: #1a237e; /* Azul técnico */
-            background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            border: 4px solid #fff; margin-top: 10px; 
-            display: flex; justify-content: center; align-items: center; 
-            overflow: hidden; border-radius: 4px; height: 350px; 
-        }
-        .tech-results { background: #111; padding: 15px; border-radius: 5px; border: 1px solid #444; height: 100%; font-family: monospace; }
-        .tech-results h4 { color: gold; border-bottom: 1px dashed #555; padding-bottom: 5px; margin-bottom: 10px; }
-        .tech-results li { margin-bottom: 8px; border-bottom: 1px solid #222; padding-bottom: 4px; }
-
-        /* Modal */
+        /* MODAL */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); padding: 10px; }
-        .modal-box { background: white; color: black; width: 100%; max-width: 500px; padding: 25px; border-radius: 8px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .modal-box { background: white; color: black; width: 100%; max-width: 500px; padding: 25px; border-radius: 8px; max-height: 90vh; overflow-y: auto; }
 
-        /* --- 7. MEDIA QUERIES (RESPONSIVIDADE) --- */
+        /* OTIMIZADOR DE CORTE */
+        .bar-visual { height: 40px; background: #333; border: 1px solid #555; margin-bottom: 10px; display: flex; position: relative; border-radius: 4px; overflow: hidden; }
+        .cut-piece { height: 100%; border-right: 1px solid #000; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #000; font-weight: bold; }
+        .waste-piece { height: 100%; background: #c62828; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; }
+
+        /* CALENDÁRIO */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
+        .cal-day { background: var(--surface-light); padding: 10px; min-height: 80px; border-radius: 4px; font-size: 0.9rem; position: relative; border: 1px solid #333; }
+        .cal-day.today { border: 1px solid var(--primary); }
+        .cal-header { text-align: center; font-weight: bold; padding: 5px; color: #aaa; font-size: 0.8rem; }
+        .cal-event { background: var(--info); color: white; padding: 2px 4px; border-radius: 3px; font-size: 0.7rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+
+        /* GRAFICO CSS */
+        .chart-container { display: flex; align-items: flex-end; height: 150px; gap: 10px; padding-top: 20px; }
+        .chart-bar { flex: 1; background: var(--primary); opacity: 0.7; border-radius: 4px 4px 0 0; position: relative; transition: 0.3s; }
+        .chart-bar:hover { opacity: 1; }
+        .chart-val { position: absolute; top: -20px; left: 0; width: 100%; text-align: center; font-size: 0.7rem; color: #fff; }
+        .chart-lbl { position: absolute; bottom: -20px; left: 0; width: 100%; text-align: center; font-size: 0.7rem; color: #aaa; }
+
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 85%; box-shadow: 5px 0 20px #000; }
             .sidebar.open { transform: translateX(0); }
             .mobile-toggle { display: block; }
             .content { padding: 15px; }
-            .wrap-flex > div { min-width: 100% !important; margin-bottom: 10px; }
-            .flex { flex-wrap: wrap; }
             .btn-close-menu { display: block !important; }
         }
         @media (min-width: 769px) { .btn-close-menu { display: none !important; } }
-
-        /* --- 8. IMPRESSÃO --- */
-        @media print {
-            body * { visibility: hidden; }
-            .modal, .modal * { visibility: visible; }
-            .modal { position: absolute; left: 0; top: 0; background: white; width: 100%; height: 100%; padding: 0; display: block; }
-            .modal-box { box-shadow: none; max-width: 100%; border-radius: 0; overflow: visible; height: auto; padding: 0; }
-            .no-print { display: none !important; }
-            canvas { filter: invert(1); border: 1px solid #000; max-width: 100%; } /* Inverte cores para fundo branco */
-            #print-area { margin: 20px; }
-        }
+        @media print { .no-print { display: none !important; } .modal { background: #fff; } .modal-box { box-shadow: none; max-width: 100%; } }
     </style>
 </head>
 <body>
 
     <div id="auth-layer">
-        
         <div id="setup-box" class="auth-box hidden">
-            <h2 class="brand-title">CONFIGURAÇÃO <span style="color: gold">INICIAL</span></h2>
-            <p class="text-center text-muted mb-2">Personalize o sistema para seu cliente</p>
+            <h2 class="text-center bold mb-2" style="color:#fff">CONFIGURAÇÃO <span style="color:var(--primary)">SISTEMA</span></h2>
             <div class="col flex">
-                <label>Nome da Empresa (Ex: JM Serralheria)</label>
-                <input type="text" id="setup-company" placeholder="Nome Fantasia">
-                
-                <label>Nome do Administrador</label>
-                <input type="text" id="setup-admin" placeholder="Nome do Dono">
-                
-                <label>Cor do Sistema</label>
-                <div class="flex align-center">
-                    <input type="color" id="setup-color" value="#d32f2f" style="flex:1">
-                    <span class="text-muted" style="flex:2">Toque na cor para alterar</span>
+                <label>Nome da Serralheria</label><input type="text" id="setup-company" placeholder="Ex: Serralheria JM">
+                <label>Nome do Responsável</label><input type="text" id="setup-admin" placeholder="Ex: João">
+                <label>Cor do Sistema</label><input type="color" id="setup-color" value="#d32f2f" style="width:100%">
+                <button class="btn-success mt-2" onclick="System.setup()">INICIAR</button>
+                <div class="mt-2" style="border-top:1px solid #444; padding-top:10px">
+                    <button class="btn-ghost w-full btn-sm" onclick="document.getElementById('backup-file').click()"><i class="fas fa-upload"></i> Restaurar Backup</button>
+                    <input type="file" id="backup-file" style="display:none" onchange="System.restore(this)">
                 </div>
-                
-                <button class="btn-success mt-2" onclick="System.setup()">SALVAR E INICIAR</button>
             </div>
         </div>
-
         <div id="login-box" class="auth-box hidden">
-            <h2 class="brand-title" id="login-brand">SISTEMA</h2>
-            <p class="text-center text-muted mb-2">Acesso Restrito</p>
+            <h2 class="text-center bold mb-2" id="login-brand" style="color:#fff; text-transform:uppercase">LOGIN</h2>
             <div class="col flex">
-                <input type="email" id="login-email" value="admin@sistema.com" placeholder="Email">
-                <input type="password" id="login-pass" value="1234" placeholder="Senha">
-                <button class="btn-primary mt-2" onclick="Auth.login()">ENTRAR</button>
+                <input type="email" id="login-email" value="admin@sistema.com">
+                <input type="password" id="login-pass" value="1234">
+                <button class="btn-primary mt-2" onclick="Auth.login()">ACESSAR</button>
             </div>
-            <p class="text-center mt-2 text-muted" style="border-top:1px solid #333; padding-top:10px;">
-                <i class="fas fa-lock"></i> Sistema Seguro V.Final
-            </p>
         </div>
     </div>
 
     <div id="app-screen" class="hidden">
-        
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="brand-text" id="sidebar-brand-text">EMPRESA</div>
-                <button class="btn-ghost btn-sm btn-close-menu" onclick="toggleMenu()" style="width:auto; display:none"><i class="fas fa-times" style="margin:0"></i></button>
+                <div class="brand-text" id="sidebar-brand-text">SISTEMA</div>
+                <button class="btn-ghost btn-sm btn-close-menu" onclick="toggleMenu()" style="width:auto; display:none">X</button>
             </div>
-            
             <div class="sidebar-scroll">
-                <div class="user-panel">
+                <div class="user-panel" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:5px; margin-bottom:20px">
                     <div id="user-name" class="bold">Usuário</div>
                     <div id="user-role" style="font-size:0.75rem; color:#888; text-transform:uppercase">Cargo</div>
                 </div>
-
-                <button class="menu-btn active" onclick="Nav.go('dashboard')"><i class="fas fa-chart-pie"></i> Visão Geral</button>
-                <button class="menu-btn" onclick="Nav.go('tech')"><i class="fas fa-ruler-combined"></i> Projetista 2D</button>
+                <button class="menu-btn active" onclick="Nav.go('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</button>
+                <button class="menu-btn" onclick="Nav.go('calendar')"><i class="fas fa-calendar-alt"></i> Agenda <span class="badge" style="background:gold;color:black;font-size:0.6rem;margin-left:auto">NOVO</span></button>
                 <button class="menu-btn" onclick="Nav.go('sales')"><i class="fas fa-file-invoice-dollar"></i> Orçamentos</button>
+                <button class="menu-btn" onclick="Nav.go('optimizer')"><i class="fas fa-cut"></i> Otimizador de Corte</button>
+                <button class="menu-btn" onclick="Nav.go('tech')"><i class="fas fa-ruler-combined"></i> Projetista 2D</button>
                 <button class="menu-btn" onclick="Nav.go('caixa')"><i class="fas fa-wallet"></i> Financeiro</button>
                 <button class="menu-btn" onclick="Nav.go('projects')"><i class="fas fa-industry"></i> Produção</button>
                 <button class="menu-btn" onclick="Nav.go('stock')"><i class="fas fa-cubes"></i> Estoque</button>
                 <button class="menu-btn" onclick="Nav.go('clients')"><i class="fas fa-address-book"></i> Clientes</button>
-                
-                <div class="admin-only" style="border-top:1px solid #444; margin-top:15px; padding-top:15px">
-                    <label style="padding-left:10px; font-size:0.7rem; font-weight:bold">ADMINISTRAÇÃO</label>
+                <button class="menu-btn" onclick="Nav.go('suppliers')"><i class="fas fa-truck"></i> Fornecedores</button>
+                <div class="admin-only" style="border-top:1px solid #444; margin-top:10px; padding-top:10px">
+                    <label style="padding-left:10px">ADMIN</label>
                     <button class="menu-btn" onclick="Nav.go('users')"><i class="fas fa-user-shield"></i> Usuários</button>
+                    <button class="menu-btn" onclick="System.backup()"><i class="fas fa-download"></i> Backup Dados</button>
                 </div>
             </div>
-
             <div class="sidebar-footer">
-                <button class="btn-danger w-full" onclick="Auth.logout()"><i class="fas fa-sign-out-alt"></i> SAIR DO SISTEMA</button>
+                <button class="btn-danger w-full" onclick="Auth.logout()"><i class="fas fa-sign-out-alt"></i> SAIR</button>
             </div>
         </nav>
 
@@ -230,7 +163,7 @@
             <header class="header">
                 <div class="flex align-center">
                     <button class="mobile-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
-                    <h2 id="page-title" style="margin-left:10px; font-size:1.3rem">Dashboard</h2>
+                    <h2 id="page-title" style="margin-left:10px">Dashboard</h2>
                 </div>
                 <div id="sys-date" class="text-muted"></div>
             </header>
@@ -239,57 +172,69 @@
                 <div class="grid-cards">
                     <div class="card"><h3>Saldo Caixa</h3><div class="val" id="dash-bal" style="color:var(--success)">R$ 0,00</div></div>
                     <div class="card"><h3>A Receber</h3><div class="val" id="dash-pend" style="color:var(--warning)">R$ 0,00</div></div>
-                    <div class="card"><h3>Produção</h3><div class="val" id="dash-prod">0</div></div>
+                    <div class="card"><h3>Em Produção</h3><div class="val" id="dash-prod">0</div></div>
                     <div class="card"><h3>Estoque Baixo</h3><div class="val" id="dash-low" style="color:var(--danger)">0</div></div>
                 </div>
                 <div class="card">
-                    <h3>Atividades Recentes</h3>
-                    <div class="table-responsive"><table id="logs-table"><thead><tr><th>Hora</th><th>Usuário</th><th>Ação</th></tr></thead><tbody></tbody></table></div>
+                    <h3>Faturamento (Últimos Lançamentos)</h3>
+                    <div class="chart-container" id="dash-chart">
+                        </div>
+                </div>
+            </section>
+
+            <section id="sec-optimizer" class="hidden">
+                <div class="card">
+                    <h3><i class="fas fa-cut"></i> Otimizador de Corte Linear (1D)</h3>
+                    <div class="flex mt-2 wrap-flex align-end">
+                        <div style="flex:1; min-width:150px"><label>Tamanho da Barra (mm)</label><input type="number" id="opt-bar" value="6000"></div>
+                        <div style="flex:2; min-width:250px"><label>Peças a cortar (mm) - Separe por vírgula</label><input type="text" id="opt-cuts" placeholder="Ex: 1200, 1200, 800, 500"></div>
+                        <button class="btn-primary" style="flex:1" onclick="Optimizer.calc()">CALCULAR</button>
+                    </div>
+                    <div id="opt-results" class="mt-2"></div>
+                </div>
+            </section>
+
+            <section id="sec-calendar" class="hidden">
+                <div class="card">
+                    <div class="flex space-between align-center">
+                        <button class="btn-ghost btn-sm" onclick="Calendar.prev()"><</button>
+                        <h3 id="cal-month-year" style="margin:0">Mês/Ano</h3>
+                        <button class="btn-ghost btn-sm" onclick="Calendar.next()">></button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="cal-header">DOM</div><div class="cal-header">SEG</div><div class="cal-header">TER</div>
+                        <div class="cal-header">QUA</div><div class="cal-header">QUI</div><div class="cal-header">SEX</div><div class="cal-header">SAB</div>
+                    </div>
+                    <div id="cal-days" class="calendar-grid"></div>
                 </div>
             </section>
 
             <section id="sec-tech" class="hidden">
                 <div class="card">
-                    <h3>Calculadora de Projetos & Estruturas</h3>
+                    <h3>Calculadora de Projetos</h3>
                     <div class="flex mt-2 wrap-flex">
-                        <div style="flex:2; min-width:200px"><label>Tipo de Projeto</label>
-                            <select id="tech-type" onchange="Tech.updateInputs()">
-                                <option value="barracao">Barracão / Galpão</option>
-                                <option value="cobertura">Cobertura / Garagem</option>
-                                <option value="portao_fechado">Portão Fechado</option>
-                                <option value="portao_aberto">Portão Grade</option>
-                                <option value="escada">Escada Reta</option>
-                                <option value="corrimao">Corrimão</option>
-                            </select>
-                        </div>
-                        <div id="input-w" style="flex:1; min-width:100px"><label>Largura (m)</label><input type="number" id="tech-w" value="10.00"></div>
-                        <div id="input-h" style="flex:1; min-width:100px"><label>Comp. (m)</label><input type="number" id="tech-l" value="20.00"></div>
-                        <div id="input-z" style="flex:1; min-width:100px"><label>Altura (m)</label><input type="number" id="tech-h" value="4.00"></div>
-                        <div id="input-opt" style="flex:1; min-width:100px"><label>Tesouras</label><input type="number" id="tech-opt" value="5"></div>
+                        <div style="flex:2; min-width:200px"><label>Tipo</label><select id="tech-type" onchange="Tech.ui()"><option value="barracao">Barracão/Galpão</option><option value="cobertura">Cobertura</option><option value="portao">Portão</option><option value="escada">Escada</option></select></div>
+                        <div style="flex:1; min-width:100px"><label>Largura (m)</label><input type="number" id="tech-w" value="10"></div>
+                        <div style="flex:1; min-width:100px"><label id="tech-l-lbl">Comp. (m)</label><input type="number" id="tech-l" value="20"></div>
+                        <div style="flex:1; min-width:100px"><label>Altura (m)</label><input type="number" id="tech-h" value="4"></div>
                     </div>
-                    <button class="btn-primary mt-2 w-full" onclick="Tech.calculate()">CALCULAR E DESENHAR</button>
-                    
-                    <div class="flex mt-2 wrap-flex" style="align-items:stretch">
-                        <div class="tech-results" style="flex:1; min-width:280px">
-                            <h4>Lista de Corte</h4><div id="tech-list">Selecione o projeto.</div>
-                        </div>
-                        <div style="flex:2; min-width:280px">
-                            <div class="blueprint-container"><canvas id="tech-canvas" width="600" height="350"></canvas></div>
-                            <p class="text-center text-muted mt-2 text-sm">*Esquemático Técnico</p>
-                        </div>
+                    <button class="btn-primary w-full mt-2" onclick="Tech.calc()">CALCULAR</button>
+                    <div class="flex mt-2 wrap-flex">
+                        <div class="tech-results" style="flex:1; min-width:280px" id="tech-list"></div>
+                        <div style="flex:2; min-width:280px"><div class="blueprint-container" style="background:#1a237e; border:4px solid #fff; height:300px; display:flex; justify-content:center; align-items:center;"><canvas id="tech-canvas" width="500" height="280"></canvas></div></div>
                     </div>
-                    <button class="btn-ghost w-full mt-2" onclick="Tech.printProject()"><i class="fas fa-print"></i> IMPRIMIR FICHA TÉCNICA</button>
+                    <button class="btn-ghost w-full mt-2" onclick="Tech.print()"><i class="fas fa-print"></i> IMPRIMIR</button>
                 </div>
             </section>
 
             <section id="sec-caixa" class="hidden">
                 <div class="card">
-                    <div class="flex space-between align-center"><h3>Livro Caixa</h3><div class="val" id="caixa-total">R$ 0,00</div></div>
-                    <div class="flex mt-2 wrap-flex" style="background:var(--surface-light); padding:10px; border-radius:5px">
-                        <div style="flex:2; min-width:150px"><input type="text" id="mov-desc" placeholder="Descrição"></div>
-                        <div style="flex:1; min-width:100px"><input type="number" id="mov-val" placeholder="Valor"></div>
-                        <div style="flex:1; min-width:100px"><select id="mov-type"><option value="in">Entrada</option><option value="out">Saída</option></select></div>
-                        <div style="flex:1; min-width:80px"><button class="btn-success w-full" onclick="Caixa.add()">+</button></div>
+                    <div class="flex space-between"><h3>Caixa</h3><div class="val" id="caixa-total">R$ 0,00</div></div>
+                    <div class="flex mt-2 wrap-flex">
+                        <input type="text" id="mov-desc" placeholder="Descrição" style="flex:2; min-width:150px">
+                        <input type="number" id="mov-val" placeholder="Valor" style="flex:1; min-width:100px">
+                        <select id="mov-type" style="flex:1"><option value="in">Entrada</option><option value="out">Saída</option></select>
+                        <button class="btn-success" style="flex:1" onclick="Caixa.add()">+</button>
                     </div>
                     <div class="table-responsive"><table id="caixa-table"><thead><tr><th>Data</th><th>Desc</th><th>Tipo</th><th>Valor</th><th>Ação</th></tr></thead><tbody></tbody></table></div>
                 </div>
@@ -298,191 +243,185 @@
             <section id="sec-sales" class="hidden">
                 <div class="card">
                     <h3>Novo Orçamento</h3>
-                    <div class="flex mt-2 wrap-flex">
-                        <div style="flex:1; min-width:200px"><label>Cliente</label><select id="sale-cli"></select></div>
-                        <div style="flex:2; min-width:200px"><label>Obra</label><input type="text" id="sale-desc" placeholder="Descrição"></div>
-                    </div>
+                    <div class="flex mt-2 col"><label>Cliente</label><div class="flex"><select id="sale-cli" style="flex:1"></select><input type="text" id="sale-desc" placeholder="Obra" style="flex:2"></div></div>
                     <div class="flex mt-2 wrap-flex align-end">
-                        <div style="flex:2; min-width:200px"><label>Material</label><select id="sale-item"></select></div>
-                        <div style="flex:1; min-width:80px"><label>Qtd</label><input type="number" id="sale-qtd" value="1"></div>
-                        <div style="flex:1; min-width:80px"><button class="btn-primary w-full" onclick="Sales.add()">Add</button></div>
+                        <div style="flex:1"><label>Data Entrega</label><input type="date" id="sale-date"></div>
+                        <div style="flex:2"><label>Material</label><select id="sale-item"></select></div>
+                        <div style="flex:1"><label>Qtd</label><input type="number" id="sale-qtd" value="1"></div>
+                        <button class="btn-primary" onclick="Sales.add()">Add</button>
                     </div>
-                    <div id="cart-list" style="background:var(--surface-light); padding:10px; margin:10px 0; border-radius:5px; min-height:50px"></div>
-                    <div class="flex wrap-flex align-center">
-                        <div style="flex:1; min-width:150px"><label>Mão de Obra (R$)</label><input type="number" id="sale-labor" onchange="Sales.upd()"></div>
-                        <div class="w-full text-right" style="flex:1; min-width:150px"><label>Total</label><div class="val" id="sale-total" style="color:var(--success)">R$ 0,00</div></div>
-                    </div>
-                    <hr style="border:0; border-top:1px solid var(--border); margin:10px 0">
-                    <div class="flex wrap-flex align-end">
-                        <div style="flex:1; min-width:150px"><label>Entrada (Lança no Caixa)</label><input type="number" id="sale-entry" placeholder="R$ 0.00"></div>
-                        <div style="flex:1; min-width:150px"><button class="btn-success w-full" onclick="Sales.finish()">CONCLUIR</button></div>
-                    </div>
+                    <div id="cart-list" style="background:var(--surface-light); padding:10px; margin:10px 0; min-height:50px"></div>
+                    <div class="flex wrap-flex align-center"><div style="flex:1"><label>Mão de Obra</label><input type="number" id="sale-labor" onchange="Sales.upd()"></div><div class="w-full text-right" style="flex:1"><label>Total</label><div class="val" id="sale-total" style="color:var(--success)">R$ 0,00</div></div></div>
+                    <hr style="border:0; border-top:1px solid #444; margin:10px 0">
+                    <div class="flex wrap-flex align-end"><div style="flex:1"><label>Entrada</label><input type="number" id="sale-entry"></div><div style="flex:1"><button class="btn-success w-full" onclick="Sales.finish()">CONCLUIR</button></div></div>
                 </div>
             </section>
 
-            <section id="sec-projects" class="hidden"><div class="card"><h3>Produção</h3><div class="table-responsive"><table id="proj-table"><thead><tr><th>Obra</th><th>Status</th><th>Pagto</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
-            
-            <section id="sec-stock" class="hidden"><div class="card"><h3>Estoque</h3><input type="hidden" id="stk-id"><div class="flex mt-2 wrap-flex align-end"><div style="flex:2; min-width:150px"><label>Nome</label><input type="text" id="stk-name"></div><div style="flex:1; min-width:80px"><label>Qtd</label><input type="number" id="stk-qtd"></div><div style="flex:1; min-width:80px"><label>Preço</label><input type="number" id="stk-price"></div><div style="flex:1; min-width:120px; display:flex; gap:5px"><button class="btn-primary w-full" onclick="Stock.save()">Salvar</button><button class="btn-ghost" onclick="Stock.clear()">Novo</button></div></div><div class="table-responsive"><table id="stk-table"><thead><tr><th>Item</th><th>Qtd</th><th>Preço</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
-            
-            <section id="sec-clients" class="hidden"><div class="card"><h3>Clientes</h3><input type="hidden" id="cli-id"><div class="flex mt-2 wrap-flex align-end"><div style="flex:2; min-width:150px"><label>Nome</label><input type="text" id="cli-name"></div><div style="flex:1; min-width:120px"><label>WhatsApp</label><input type="text" id="cli-phone"></div><div style="flex:1; min-width:120px; display:flex; gap:5px"><button class="btn-primary w-full" onclick="Clients.save()">Salvar</button><button class="btn-ghost" onclick="Clients.clear()">Novo</button></div></div><div class="table-responsive"><table id="cli-table"><thead><tr><th>Nome</th><th>Tel</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
-            
-            <section id="sec-users" class="hidden"><div class="card"><h3>Usuários</h3><input type="hidden" id="usr-id"><div class="flex mt-2 wrap-flex align-end"><div style="flex:1; min-width:120px"><label>Nome</label><input type="text" id="usr-name"></div><div style="flex:1; min-width:120px"><label>Email</label><input type="email" id="usr-email"></div><div style="flex:1; min-width:100px"><label>Nível</label><select id="usr-role"><option value="funcionario">Func</option><option value="admin">Admin</option></select></div><div style="flex:1; min-width:80px"><button class="btn-primary w-full" onclick="Users.save()">Salvar</button></div></div><div class="table-responsive"><table id="usr-table"><thead><tr><th>Nome</th><th>Email</th><th>Nível</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
+            <section id="sec-projects" class="hidden"><div class="card"><h3>Produção</h3><div class="table-responsive"><table id="proj-table"><thead><tr><th>Obra</th><th>Entrega</th><th>Status</th><th>Pagto</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
+            <section id="sec-stock" class="hidden"><div class="card"><h3>Estoque</h3><input type="hidden" id="stk-id"><div class="flex mt-2 wrap-flex align-end"><div style="flex:2"><label>Nome</label><input type="text" id="stk-name"></div><div style="flex:1"><label>Qtd</label><input type="number" id="stk-qtd"></div><div style="flex:1"><label>Preço</label><input type="number" id="stk-price"></div><button class="btn-primary" onclick="Stock.save()">Salvar</button><button class="btn-ghost" onclick="Stock.clear()">Novo</button></div><div class="table-responsive"><table id="stk-table"><thead><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
+            <section id="sec-clients" class="hidden"><div class="card"><h3>Clientes</h3><input type="hidden" id="cli-id"><div class="flex mt-2 wrap-flex align-end"><div style="flex:2"><label>Nome</label><input type="text" id="cli-name"></div><div style="flex:1"><label>Zap</label><input type="text" id="cli-phone"></div><button class="btn-primary" onclick="Clients.save()">Salvar</button><button class="btn-ghost" onclick="Clients.clear()">Novo</button></div><div class="table-responsive"><table id="cli-table"><thead><tr><th>Nome</th><th>Tel</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
+            <section id="sec-suppliers" class="hidden"><div class="card"><h3>Fornecedores</h3><input type="hidden" id="sup-id"><div class="flex mt-2 wrap-flex align-end"><div style="flex:2"><label>Empresa</label><input type="text" id="sup-name"></div><div style="flex:1"><label>Contato</label><input type="text" id="sup-phone"></div><button class="btn-primary" onclick="Suppliers.save()">Salvar</button><button class="btn-ghost" onclick="Suppliers.clear()">Novo</button></div><div class="table-responsive"><table id="sup-table"><thead><tr><th>Empresa</th><th>Contato</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
+            <section id="sec-users" class="hidden"><div class="card"><h3>Usuários</h3><input type="hidden" id="usr-id"><div class="flex mt-2 wrap-flex align-end"><div style="flex:1"><label>Nome</label><input type="text" id="usr-name"></div><div style="flex:1"><label>Email</label><input type="email" id="usr-email"></div><div style="flex:1"><label>Nível</label><select id="usr-role"><option value="funcionario">Func</option><option value="admin">Admin</option></select></div><button class="btn-primary" onclick="Users.save()">Salvar</button></div><div class="table-responsive"><table id="usr-table"><thead><tr><th>Nome</th><th>Email</th><th>Nível</th><th>Ação</th></tr></thead><tbody></tbody></table></div></div></section>
         </main>
     </div>
 
     <div class="modal" id="inv-modal">
         <div class="modal-box">
-            <div id="print-area">
-                <h3 class="text-center" id="print-brand" style="border-bottom:1px dashed #000; padding-bottom:10px; color:black">SERRALHERIA</h3>
-                <p id="inv-date" class="text-right text-muted mt-2" style="color:black !important"></p>
-                <div style="color:black">
-                    <p><strong>Cliente:</strong> <span id="inv-cli"></span></p>
-                    <p><strong>Ref:</strong> <span id="inv-desc"></span></p>
-                </div>
-                <hr style="border:0; border-top:1px dashed #000; margin:10px 0;">
-                
-                <div id="inv-body" style="color:black"></div>
-                
-                <hr style="border:0; border-top:1px dashed #000; margin:10px 0;">
-                <p class="text-right bold" style="font-size:1.2rem; color:black" id="inv-total-line">TOTAL: <span id="inv-total"></span></p>
-            </div>
-
-            <div class="flex mt-2 no-print">
-                <button class="btn-success w-full" id="btn-zap" onclick="Sales.zap()">WhatsApp</button>
-                <button class="btn-danger w-full" onclick="document.getElementById('inv-modal').style.display='none'">Fechar</button>
-            </div>
-            <div class="text-center mt-2 no-print">
-                <button class="btn-ghost" onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
-            </div>
+            <h3 class="text-center" id="print-brand" style="border-bottom:1px solid #000; padding-bottom:10px; color:black">SERRALHERIA</h3>
+            <div id="inv-content" style="color:black; margin-top:10px"></div>
+            <div class="flex mt-2 no-print"><button class="btn-success w-full" onclick="Sales.zap()">WhatsApp</button><button class="btn-danger w-full" onclick="document.getElementById('inv-modal').style.display='none'">Fechar</button></div>
+            <div class="text-center mt-2 no-print"><button class="btn-ghost" onclick="window.print()">Imprimir</button></div>
         </div>
     </div>
 
     <script>
         // CONFIG
-        const DB_KEY='jm_sys_v_final'; const CFG_KEY='jm_cfg_v_final';
-        const dummy={ users:[], clients:[], stock:[{id:1,name:'Metalon 50x30',qtd:50,price:95.00},{id:2,name:'Telha Sanduíche',qtd:100,price:120.00}], sales:[], movements:[], logs:[] };
+        const DB_KEY='jm_sys_supreme_v1'; const CFG_KEY='jm_cfg_supreme_v1';
+        const dummy={ users:[], clients:[], suppliers:[], stock:[{id:1,name:'Metalon 30x30',qtd:50,price:80},{id:2,name:'Telha',qtd:100,price:100}], sales:[], movements:[], logs:[] };
         let db=null, config=null, currUser=null, cart=[], currSale=null;
-
+        
         // INIT
         function init(){
             config=JSON.parse(localStorage.getItem(CFG_KEY)); db=JSON.parse(localStorage.getItem(DB_KEY));
             if(!config) document.getElementById('setup-box').classList.remove('hidden');
-            else { if(!db)db=defaultDB(); applyBrand(); document.getElementById('login-box').classList.remove('hidden'); const adm=db.users.find(u=>u.role=='admin'); if(adm)document.getElementById('login-email').value=adm.email; }
+            else { if(!db)db=JSON.parse(JSON.stringify(dummy)); applyBrand(); document.getElementById('login-box').classList.remove('hidden'); const adm=db.users.find(u=>u.role=='admin'); if(adm)document.getElementById('login-email').value=adm.email; }
         }
-        function defaultDB(){ return JSON.parse(JSON.stringify(dummy)); }
 
-        // SETUP & BRANDING
+        // SYSTEM & BRAND
         const System = {
             setup: ()=>{
                 const c=document.getElementById('setup-company').value, a=document.getElementById('setup-admin').value, clr=document.getElementById('setup-color').value;
                 if(!c||!a)return alert('Preencha tudo');
                 config={company:c, owner:a, color:clr}; localStorage.setItem(CFG_KEY, JSON.stringify(config));
-                db=defaultDB(); db.users.push({id:1,name:a,email:'admin@sistema.com',pass:'1234',role:'admin'});
-                db.clients.push({id:1,name:'Cliente Exemplo',phone:'11999999999'}); db.movements.push({id:1,date:new Date().toLocaleDateString(),desc:'Abertura',type:'in',val:500});
-                localStorage.setItem(DB_KEY, JSON.stringify(db)); alert('Configurado! Login: admin@sistema.com / 1234'); location.reload();
-            }
+                db=JSON.parse(JSON.stringify(dummy)); db.users.push({id:1,name:a,email:'admin@sistema.com',pass:'1234',role:'admin'});
+                localStorage.setItem(DB_KEY, JSON.stringify(db)); alert('Pronto! Login: admin@sistema.com / 1234'); location.reload();
+            },
+            backup: ()=>{ const d="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(db)); const a=document.createElement('a'); a.href=d; a.download='backup.json'; document.body.appendChild(a); a.click(); a.remove(); },
+            restore: (input)=>{ const f=input.files[0]; const r=new FileReader(); r.onload=(e)=>{try{db=JSON.parse(e.target.result);localStorage.setItem(DB_KEY,JSON.stringify(db));alert('Restaurado!');location.reload();}catch(x){alert('Erro');}}; r.readAsText(f); }
         };
-        function applyBrand(){
-            if(config){
-                document.documentElement.style.setProperty('--primary', config.color);
-                document.getElementById('login-brand').innerText=config.company.toUpperCase();
-                document.getElementById('sidebar-brand-text').innerText=config.company;
-                document.getElementById('print-brand').innerText=config.company.toUpperCase();
-                document.title=config.company + " - Sistema";
-            }
-        }
+        function applyBrand(){ if(config){ document.documentElement.style.setProperty('--primary', config.color); document.getElementById('sidebar-brand-text').innerText=config.company; document.getElementById('print-brand').innerText=config.company.toUpperCase(); document.title=config.company; } }
 
         // UTILS
         const save=()=>{localStorage.setItem(DB_KEY,JSON.stringify(db));Dash.render();};
-        const log=(a)=>{db.logs.unshift({time:new Date().toLocaleTimeString(),user:currUser?currUser.name:'Sys',action:a});if(db.logs.length>30)db.logs.pop();save();};
         const fmt=(v)=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         const now=()=>new Date().toLocaleDateString();
         function toggleMenu(){document.getElementById('sidebar').classList.toggle('open');}
 
-        // AUTH
-        const Auth={
-            login:()=>{
-                const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value, u=db.users.find(x=>x.email===e&&x.pass===p);
-                if(u){ currUser=u; document.getElementById('auth-layer').classList.add('hidden'); document.getElementById('app-screen').classList.remove('hidden');
-                document.getElementById('user-name').innerText=u.name; document.getElementById('user-role').innerText=u.role; document.getElementById('sys-date').innerText=now();
-                document.querySelectorAll('.admin-only').forEach(el=>el.style.display=u.role=='admin'?'block':'none'); Nav.go('dashboard'); } else alert('Erro');
-            },
-            logout:()=>{ if(confirm('Sair?')) location.reload(); }
-        };
-        const Nav={
-            go:(s)=>{
-                if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');
-                document.querySelectorAll('section').forEach(x=>x.classList.add('hidden')); document.getElementById('sec-'+s).classList.remove('hidden');
-                document.getElementById('page-title').innerText=s.toUpperCase(); document.querySelectorAll('.menu-btn').forEach(b=>b.classList.remove('active'));
-                if(s=='dashboard')Dash.render(); if(s=='caixa')Caixa.render(); if(s=='sales')Sales.init(); if(s=='projects')Projects.render(); if(s=='stock')Stock.render(); if(s=='clients')Clients.render(); if(s=='users')Users.render();
+        // AUTH & NAV
+        const Auth={ login:()=>{ const e=document.getElementById('login-email').value, p=document.getElementById('login-pass').value, u=db.users.find(x=>x.email===e&&x.pass===p); if(u){ currUser=u; document.getElementById('auth-layer').classList.add('hidden'); document.getElementById('app-screen').classList.remove('hidden'); document.getElementById('user-name').innerText=u.name; document.getElementById('user-role').innerText=u.role; document.getElementById('sys-date').innerText=now(); document.querySelectorAll('.admin-only').forEach(el=>el.style.display=u.role=='admin'?'block':'none'); Nav.go('dashboard'); } else alert('Dados incorretos'); }, logout:()=>{ if(confirm('Sair?')) location.reload(); } };
+        const Nav={ go:(s)=>{ if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open'); document.querySelectorAll('section').forEach(x=>x.classList.add('hidden')); document.getElementById('sec-'+s).classList.remove('hidden'); document.getElementById('page-title').innerText=s.toUpperCase(); if(s=='dashboard')Dash.render(); if(s=='caixa')Caixa.render(); if(s=='sales')Sales.init(); if(s=='projects')Projects.render(); if(s=='stock')Stock.render(); if(s=='clients')Clients.render(); if(s=='users')Users.render(); if(s=='calendar')Calendar.render(); if(s=='suppliers')Suppliers.render(); } };
+
+        // OTIMIZADOR DE CORTE
+        const Optimizer = {
+            calc: () => {
+                const barLen = parseFloat(document.getElementById('opt-bar').value);
+                const cutsInput = document.getElementById('opt-cuts').value;
+                if(!barLen || !cutsInput) return alert('Preencha os dados');
+                
+                const cuts = cutsInput.split(',').map(n => parseFloat(n.trim())).filter(n => n > 0).sort((a,b) => b-a);
+                const bars = []; 
+
+                cuts.forEach(cut => {
+                    let placed = false;
+                    for(let bar of bars) {
+                        if(bar.remain >= cut) { bar.cuts.push(cut); bar.remain -= cut; placed = true; break; }
+                    }
+                    if(!placed) { bars.push({ cuts:[cut], remain: barLen - cut }); }
+                });
+
+                let html = `<h4>Resultado: ${bars.length} Barras de ${barLen}mm</h4>`;
+                bars.forEach((bar, i) => {
+                    html += `<div style="margin-bottom:5px">Barra ${i+1} (Sobra: ${bar.remain}mm): `;
+                    html += `<div class="bar-visual" style="display:flex; width:100%; height:30px; border:1px solid #fff;">`;
+                    bar.cuts.forEach(c => {
+                        const pct = (c/barLen)*100;
+                        html += `<div style="width:${pct}%; background:#2e7d32; border-right:1px solid #000; color:#fff; font-size:0.7rem; display:flex; align-items:center; justify-content:center;">${c}</div>`;
+                    });
+                    const remPct = (bar.remain/barLen)*100;
+                    if(remPct > 0) html += `<div style="width:${remPct}%; background:#c62828; display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.7rem;">Sobra</div>`;
+                    html += `</div></div>`;
+                });
+                document.getElementById('opt-results').innerHTML = html;
             }
         };
 
-        // DASHBOARD
-        const Dash={render:()=>{
-            let b=0;db.movements.forEach(m=>b+=(m.type=='in'?m.val:-m.val)); document.getElementById('dash-bal').innerText=fmt(b);
-            let p=0;db.sales.forEach(s=>{if(!s.paid)p+=(s.total-s.entry)}); document.getElementById('dash-pend').innerText=fmt(p);
-            document.getElementById('dash-prod').innerText=db.sales.filter(s=>s.status=='PRODUCAO').length;
-            document.getElementById('dash-low').innerText=db.stock.filter(s=>s.qtd<5).length;
-            const t=document.getElementById('logs-table').querySelector('tbody'); t.innerHTML=''; db.logs.slice(0,10).forEach(l=>t.innerHTML+=`<tr><td><small>${l.time}</small></td><td>${l.user}</td><td>${l.action}</td></tr>`);
-        }};
-
-        // PROJETISTA 3.0 (COM IMPRESSÃO)
-        const Tech = {
-            updateInputs: () => {
-                const t = document.getElementById('tech-type').value;
-                const lW=document.querySelector('#input-w label'), lL=document.querySelector('#input-h label'), lZ=document.querySelector('#input-z label'), dOpt=document.getElementById('input-opt'), lOpt=document.querySelector('#input-opt label');
-                dOpt.style.display='block'; lW.innerText='Largura (m)'; lL.innerText='Comprimento (m)'; lZ.innerText='Altura (m)'; lOpt.innerText='Tesouras (Qtd)';
-                if(t==='escada'){ lW.innerText='Largura Degrau'; lL.innerText='Altura Total'; lZ.innerText='Profundidade'; dOpt.style.display='none'; }
-                else if(t.includes('portao')){ lL.innerText='Altura'; lZ.innerText='Espessura'; dOpt.style.display='none'; }
-                else if(t==='corrimao'){ lL.innerText='Extensão'; lZ.innerText='Altura'; dOpt.style.display='none'; }
+        // CALENDÁRIO
+        const Calendar = {
+            date: new Date(),
+            render: () => {
+                const m = Calendar.date.getMonth(), y = Calendar.date.getFullYear();
+                document.getElementById('cal-month-year').innerText = new Date(y, m).toLocaleDateString('pt-BR', {month:'long', year:'numeric'}).toUpperCase();
+                const firstDay = new Date(y, m, 1).getDay();
+                const daysInMonth = new Date(y, m + 1, 0).getDate();
+                const container = document.getElementById('cal-days'); container.innerHTML = '';
+                
+                for(let i=0; i<firstDay; i++) container.innerHTML += `<div></div>`;
+                for(let d=1; d<=daysInMonth; d++) {
+                    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const today = (new Date().toISOString().split('T')[0] === dateStr) ? 'border:1px solid var(--primary)' : '';
+                    let events = '';
+                    db.sales.forEach(s => { if(s.delivery === dateStr && s.status !== 'ENTREGUE') events += `<div class="cal-event" style="background:var(--info); font-size:0.7rem; margin-top:2px; padding:2px; border-radius:2px;">${s.client}</div>`; });
+                    container.innerHTML += `<div class="cal-day" style="background:var(--surface-light); min-height:80px; padding:5px; border:1px solid #333; ${today}">${d} ${events}</div>`;
+                }
             },
-            calculate: () => {
-                const t=document.getElementById('tech-type').value, w=parseFloat(document.getElementById('tech-w').value), l=parseFloat(document.getElementById('tech-l').value), h=parseFloat(document.getElementById('tech-h').value), opt=parseFloat(document.getElementById('tech-opt').value);
-                const cv=document.getElementById('tech-canvas'), ctx=cv.getContext('2d'), lst=document.getElementById('tech-list');
-                ctx.clearRect(0,0,600,350); ctx.strokeStyle='#fff'; ctx.fillStyle='#fff'; ctx.lineWidth=2; ctx.font="12px monospace";
-                let html="";
+            next: () => { Calendar.date.setMonth(Calendar.date.getMonth()+1); Calendar.render(); },
+            prev: () => { Calendar.date.setMonth(Calendar.date.getMonth()-1); Calendar.render(); }
+        };
 
-                if(t==='barracao'||t==='cobertura') {
-                    const area=w*l, qtdTes=opt||(Math.ceil(l/4)+1), col=qtdTes*2, totCol=col*h, tercas=(Math.ceil(w/1.5)+1)*l, telhas=Math.ceil(l)*Math.ceil(w);
-                    html=`<ul><li style="color:gold">Área: ${area.toFixed(2)}m²</li><li>Colunas (${col} un): ${totCol.toFixed(2)}m</li><li>Tesouras: ${qtdTes} un</li><li>Terças: ${tercas.toFixed(2)}m</li><li style="color:#4fc3f7">Telhas: ${area.toFixed(2)}m²</li></ul>`;
-                    ctx.beginPath(); ctx.moveTo(100,300); ctx.lineTo(100,300-(h*20)); ctx.moveTo(500,300); ctx.lineTo(500,300-(h*20)); 
-                    ctx.moveTo(100,300-(h*20)); ctx.lineTo(300,300-(h*20)-40); ctx.lineTo(500,300-(h*20)); ctx.lineTo(100,300-(h*20)); ctx.stroke();
-                    ctx.fillText(`Vão: ${w}m`,270,330); ctx.fillText(`Pé: ${h}m`,20,250);
+        // DASHBOARD GRAPHIC (CSS ONLY)
+        const Dash = {
+            render: () => {
+                let bal=0; db.movements.forEach(m=>bal+=(m.type=='in'?m.val:-m.val)); document.getElementById('dash-bal').innerText=fmt(bal);
+                let pen=0; db.sales.forEach(s=>{if(!s.paid)pen+=(s.total-s.entry)}); document.getElementById('dash-pend').innerText=fmt(pen);
+                document.getElementById('dash-prod').innerText=db.sales.filter(s=>s.status=='PRODUCAO').length;
+                document.getElementById('dash-low').innerText=db.stock.filter(s=>s.qtd<5).length;
+                
+                // Gráfico Simples (Ultimos 5 lançamentos de entrada)
+                const chart = document.getElementById('dash-chart'); chart.innerHTML = '';
+                const lastIn = db.movements.filter(m=>m.type=='in').slice(-5);
+                const maxVal = Math.max(...lastIn.map(m=>m.val)) || 1;
+                lastIn.forEach(m => {
+                    const h = (m.val / maxVal) * 100;
+                    chart.innerHTML += `<div class="chart-bar" style="height:${h}%; width:100%; background:var(--primary); margin:0 5px; position:relative;"><span style="position:absolute; top:-20px; font-size:0.7rem; width:100%; text-align:center;">${m.val}</span></div>`;
+                });
+            }
+        };
+
+        // TECNICO
+        const Tech = {
+            ui: () => {
+                const t=document.getElementById('tech-type').value, lbl=document.getElementById('tech-l-lbl');
+                lbl.innerText = (t=='barracao'||t=='cobertura') ? 'Comp. (m)' : 'Altura (m)';
+            },
+            calc: () => {
+                const t=document.getElementById('tech-type').value, w=parseFloat(document.getElementById('tech-w').value), l=parseFloat(document.getElementById('tech-l').value), h=parseFloat(document.getElementById('tech-h').value);
+                const cv=document.getElementById('tech-canvas'), ctx=cv.getContext('2d'), lst=document.getElementById('tech-list');
+                ctx.clearRect(0,0,500,280); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.fillStyle='#fff';
+                let html="";
+                if(t=='barracao'||t=='cobertura'){
+                    html=`<ul><li>Área: ${(w*l).toFixed(2)}m²</li><li>Tesouras: ${Math.ceil(l/4)+1}</li><li>Terças: ${Math.ceil(w/1.5)+1} linhas</li><li>Telhas: ${Math.ceil(l)*Math.ceil(w)}m</li></ul>`;
+                    ctx.beginPath(); ctx.moveTo(50,250); ctx.lineTo(50,250-(h*20)); ctx.lineTo(250,50); ctx.lineTo(450,250-(h*20)); ctx.lineTo(450,250); ctx.stroke();
+                } else {
+                    html=`<ul><li>Cálculo Geral</li><li>Área: ${(w*l).toFixed(2)}m²</li></ul>`;
+                    ctx.strokeRect(100,50,300,180);
                 }
-                else if(t.includes('portao')) {
-                    const area=w*l, perim=(w+l)*2; html=`<ul><li>Dim: ${w}x${l}m</li><li>Área: ${area.toFixed(2)}m²</li><li>Quadro: ${perim.toFixed(2)}m</li></ul>`;
-                    ctx.strokeRect(150,50,300,200); if(!t.includes('fechado')){ctx.beginPath();for(let i=160;i<450;i+=20){ctx.moveTo(i,50);ctx.lineTo(i,250)}ctx.stroke();}
-                }
-                else html="<ul><li>Cálculo Padrão.</li></ul>";
                 lst.innerHTML=html;
             },
-            printProject: () => {
-                const cv = document.getElementById('tech-canvas');
-                const listHtml = document.getElementById('tech-list').innerHTML;
-                const type = document.getElementById('tech-type').options[document.getElementById('tech-type').selectedIndex].text;
-                
-                document.getElementById('inv-modal').style.display = 'flex';
-                document.getElementById('inv-date').innerText = now();
-                document.getElementById('inv-cli').innerText = "Interno";
-                document.getElementById('inv-desc').innerText = "Projeto Técnico - " + type;
-                document.getElementById('btn-zap').style.display = 'none'; 
-                document.getElementById('inv-total-line').style.display = 'none'; 
-
-                const img = cv.toDataURL("image/png");
-                document.getElementById('inv-body').innerHTML = `<div style="margin-bottom:15px; border:1px solid #ccc; padding:10px;">${listHtml}</div><div style="text-align:center;"><img src="${img}" style="max-width:100%; border:1px solid #000; filter:invert(1)"></div>`;
+            print: () => {
+                const img = document.getElementById('tech-canvas').toDataURL();
+                const list = document.getElementById('tech-list').innerHTML;
+                document.getElementById('inv-modal').style.display='flex';
+                document.getElementById('inv-content').innerHTML = `<h4>PROJETO TÉCNICO</h4>${list}<br><img src="${img}" style="width:100%; border:1px solid #000; filter:invert(1)">`;
             }
         };
 
         // GESTÃO
         const Caixa={ add:()=>{const d=document.getElementById('mov-desc').value,v=parseFloat(document.getElementById('mov-val').value),t=document.getElementById('mov-type').value;if(d&&v){db.movements.unshift({id:Date.now(),date:now(),desc:d,type:t,val:v});save();Caixa.render();document.getElementById('mov-desc').value='';document.getElementById('mov-val').value='';}}, render:()=>{const t=document.getElementById('caixa-table').querySelector('tbody');t.innerHTML='';let b=0;db.movements.slice().reverse().forEach(m=>b+=(m.type=='in'?m.val:-m.val));document.getElementById('caixa-total').innerText=fmt(b);db.movements.forEach(m=>{t.innerHTML+=`<tr><td>${m.date}</td><td>${m.desc}</td><td><span class="badge ${m.type=='in'?'in':'out'}">${m.type}</span></td><td class="bold ${m.type=='in'?'text-success':'text-danger'}">${fmt(m.val)}</td><td>${currUser.role=='admin'?`<button class="btn-danger btn-sm" onclick="Caixa.del(${m.id})">X</button>`:''}</td></tr>`});}, del:(id)=>{if(confirm('Apagar?')){db.movements=db.movements.filter(x=>x.id!==id);save();Caixa.render();}}};
-
-        const Sales={ init:()=>{cart=[];const c=document.getElementById('sale-cli');c.innerHTML='<option value="">Cliente</option>';db.clients.forEach(x=>c.innerHTML+=`<option value="${x.name}">${x.name}</option>`);const i=document.getElementById('sale-item');i.innerHTML='<option value="">Material</option>';db.stock.forEach((x,ix)=>i.innerHTML+=`<option value="${ix}">${x.name} (${fmt(x.price)})</option>`);Sales.renderCart();}, add:()=>{const ix=document.getElementById('sale-item').value,q=parseFloat(document.getElementById('sale-qtd').value);if(ix===''||!q)return;const it=db.stock[ix];cart.push({name:it.name,price:it.price,qtd:q,total:it.price*q,idx:ix});Sales.renderCart();}, renderCart:()=>{const d=document.getElementById('cart-list');d.innerHTML='';cart.forEach((c,i)=>d.innerHTML+=`<div class="flex space-between" style="border-bottom:1px solid #333;padding:5px"><span>${c.qtd}x ${c.name}</span><span>${fmt(c.total)} <i class="fas fa-trash" style="color:var(--danger);cursor:pointer" onclick="cart.splice(${i},1);Sales.renderCart()"></i></span></div>`);Sales.upd();}, upd:()=>{const l=parseFloat(document.getElementById('sale-labor').value)||0,t=cart.reduce((a,b)=>a+b.total,0)+l;document.getElementById('sale-total').innerText=fmt(t);return t;}, finish:()=>{const c=document.getElementById('sale-cli').value,d=document.getElementById('sale-desc').value,e=parseFloat(document.getElementById('sale-entry').value)||0;if(!c||!d||cart.length==0)return alert('Dados incompletos');cart.forEach(x=>db.stock[x.idx].qtd-=x.qtd);const t=Sales.upd(),s={id:Date.now(),date:now(),client:c,desc:d,items:[...cart],total:t,entry:e,paid:e>=t,status:'PRODUCAO'};db.sales.push(s);if(e>0)db.movements.unshift({id:Date.now(),date:now(),desc:`Entrada: ${c}`,type:'in',val:e});save();currSale=s;Sales.showInv();Nav.go('projects');}, showInv:()=>{const s=currSale;document.getElementById('inv-modal').style.display='flex';document.getElementById('inv-date').innerText=s.date;document.getElementById('inv-cli').innerText=s.client;document.getElementById('inv-desc').innerText=s.desc;document.getElementById('inv-total').innerText=fmt(s.total);document.getElementById('btn-zap').style.display='block';document.getElementById('inv-total-line').style.display='block';document.getElementById('inv-body').innerHTML=s.items.map(i=>`<div class="flex space-between mb-2 text-sm"><span style="color:black">${i.qtd}x ${i.name}</span><span style="color:black">${fmt(i.total)}</span></div>`).join('');}, zap:()=>{const s=currSale,c=db.clients.find(x=>x.name==s.client);window.open(`https://wa.me/55${c?c.phone:''}?text=${encodeURIComponent(`Orçamento: ${s.desc} Total: ${fmt(s.total)}`)}`);}};
-
-        const Projects={render:()=>{const t=document.getElementById('proj-table').querySelector('tbody');t.innerHTML='';db.sales.slice().reverse().forEach(s=>{const d=s.total-s.entry,pay=s.paid?'<span class="badge in">PAGO</span>':`<button class="btn-sm btn-info" onclick="Projects.pay(${s.id})">REC ${fmt(d)}</button>`;t.innerHTML+=`<tr><td>${s.client}<br><small>${s.desc}</small></td><td><select onchange="Projects.st(${s.id},this.value)" style="padding:0;font-size:0.8rem"><option value="PRODUCAO" ${s.status=='PRODUCAO'?'selected':''}>Prod</option><option value="ENTREGUE" ${s.status=='ENTREGUE'?'selected':''}>Fim</option></select></td><td>${pay}</td><td><button class="btn-danger btn-sm" onclick="Projects.del(${s.id})">X</button></td></tr>`});}, st:(id,v)=>{db.sales.find(x=>x.id==id).status=v;save();}, del:(id)=>{if(confirm('Apagar?')){db.sales=db.sales.filter(x=>x.id!==id);save();Projects.render();}}, pay:(id)=>{const s=db.sales.find(x=>x.id==id),d=s.total-s.entry;if(confirm(`Receber ${fmt(d)}?`)){s.paid=true;db.movements.unshift({id:Date.now(),date:now(),desc:`Quitacao: ${s.client}`,type:'in',val:d});save();Projects.render();alert('Caixa ok');}}};
-
+        const Sales={ init:()=>{cart=[];const c=document.getElementById('sale-cli');c.innerHTML='<option value="">Cliente</option>';db.clients.forEach(x=>c.innerHTML+=`<option value="${x.name}">${x.name}</option>`);const i=document.getElementById('sale-item');i.innerHTML='<option value="">Material</option>';db.stock.forEach((x,ix)=>i.innerHTML+=`<option value="${ix}">${x.name} (${fmt(x.price)})</option>`);Sales.renderCart();}, add:()=>{const ix=document.getElementById('sale-item').value,q=parseFloat(document.getElementById('sale-qtd').value);if(ix===''||!q)return;const it=db.stock[ix];cart.push({name:it.name,price:it.price,qtd:q,total:it.price*q,idx:ix});Sales.renderCart();}, renderCart:()=>{const d=document.getElementById('cart-list');d.innerHTML='';cart.forEach((c,i)=>d.innerHTML+=`<div class="flex space-between" style="border-bottom:1px solid #333;padding:5px"><span>${c.qtd}x ${c.name}</span><span>${fmt(c.total)} <i class="fas fa-trash" style="color:var(--danger);cursor:pointer" onclick="cart.splice(${i},1);Sales.renderCart()"></i></span></div>`);Sales.upd();}, upd:()=>{const l=parseFloat(document.getElementById('sale-labor').value)||0,t=cart.reduce((a,b)=>a+b.total,0)+l;document.getElementById('sale-total').innerText=fmt(t);return t;}, finish:()=>{const c=document.getElementById('sale-cli').value,d=document.getElementById('sale-desc').value,e=parseFloat(document.getElementById('sale-entry').value)||0,dt=document.getElementById('sale-date').value;if(!c||!d||cart.length==0)return alert('Dados incompletos');cart.forEach(x=>db.stock[x.idx].qtd-=x.qtd);const t=Sales.upd(),s={id:Date.now(),date:now(),delivery:dt,client:c,desc:d,items:[...cart],total:t,entry:e,paid:e>=t,status:'PRODUCAO'};db.sales.push(s);if(e>0)db.movements.unshift({id:Date.now(),date:now(),desc:`Entrada: ${c}`,type:'in',val:e});save();currSale=s;Sales.showInv();Nav.go('projects');}, showInv:()=>{const s=currSale;document.getElementById('inv-modal').style.display='flex';document.getElementById('inv-content').innerHTML=`<p><strong>Cliente:</strong> ${s.client}</p><p><strong>Obra:</strong> ${s.desc}</p><hr>${s.items.map(i=>`<div>${i.qtd}x ${i.name} - ${fmt(i.total)}</div>`).join('')}<hr><p class="text-right bold">TOTAL: ${fmt(s.total)}</p>`;}, zap:()=>{const s=currSale,c=db.clients.find(x=>x.name==s.client);window.open(`https://wa.me/55${c?c.phone:''}?text=${encodeURIComponent(`Orçamento: ${s.desc} Total: ${fmt(s.total)}`)}`);}};
+        const Projects={render:()=>{const t=document.getElementById('proj-table').querySelector('tbody');t.innerHTML='';db.sales.slice().reverse().forEach(s=>{const d=s.total-s.entry,pay=s.paid?'<span class="badge in">PAGO</span>':`<button class="btn-sm btn-info" onclick="Projects.pay(${s.id})">REC ${fmt(d)}</button>`;t.innerHTML+=`<tr><td>${s.client}<br><small>${s.desc}</small><br><small style="color:var(--primary)">Entrega: ${s.delivery||'N/A'}</small></td><td><select onchange="Projects.st(${s.id},this.value)" style="padding:0;font-size:0.8rem"><option value="PRODUCAO" ${s.status=='PRODUCAO'?'selected':''}>Prod</option><option value="ENTREGUE" ${s.status=='ENTREGUE'?'selected':''}>Fim</option></select></td><td>${pay}</td><td><button class="btn-danger btn-sm" onclick="Projects.del(${s.id})">X</button></td></tr>`});}, st:(id,v)=>{db.sales.find(x=>x.id==id).status=v;save();}, del:(id)=>{if(confirm('Apagar?')){db.sales=db.sales.filter(x=>x.id!==id);save();Projects.render();}}, pay:(id)=>{const s=db.sales.find(x=>x.id==id),d=s.total-s.entry;if(confirm(`Receber ${fmt(d)}?`)){s.paid=true;db.movements.unshift({id:Date.now(),date:now(),desc:`Quitacao: ${s.client}`,type:'in',val:d});save();Projects.render();alert('Caixa Atualizado');}}};
         const Stock={render:()=>{const t=document.getElementById('stk-table').querySelector('tbody');t.innerHTML='';db.stock.forEach(s=>t.innerHTML+=`<tr><td>${s.name}</td><td>${s.qtd}</td><td>${fmt(s.price)}</td><td><button class="btn-info btn-sm" onclick="Stock.edit(${s.id})">E</button><button class="btn-danger btn-sm" onclick="Stock.del(${s.id})">X</button></td></tr>`);}, save:()=>{const id=document.getElementById('stk-id').value,n=document.getElementById('stk-name').value,q=document.getElementById('stk-qtd').value,p=document.getElementById('stk-price').value;if(!n)return;if(id){const i=db.stock.findIndex(x=>x.id==id);db.stock[i]={id:parseInt(id),name:n,qtd:parseFloat(q),price:parseFloat(p)}}else{db.stock.push({id:Date.now(),name:n,qtd:parseFloat(q),price:parseFloat(p)})}save();Stock.clear();Stock.render();}, edit:(id)=>{const s=db.stock.find(x=>x.id==id);document.getElementById('stk-id').value=s.id;document.getElementById('stk-name').value=s.name;document.getElementById('stk-qtd').value=s.qtd;document.getElementById('stk-price').value=s.price;}, del:(id)=>{if(confirm('Apagar?')){db.stock=db.stock.filter(x=>x.id!==id);save();Stock.render();}}, clear:()=>{document.getElementById('stk-id').value='';document.getElementById('stk-name').value='';document.getElementById('stk-qtd').value='';document.getElementById('stk-price').value='';}};
         const Clients={render:()=>{const t=document.getElementById('cli-table').querySelector('tbody');t.innerHTML='';db.clients.forEach(c=>t.innerHTML+=`<tr><td>${c.name}</td><td>${c.phone}</td><td><button class="btn-info btn-sm" onclick="Clients.edit(${c.id})">E</button><button class="btn-danger btn-sm" onclick="Clients.del(${c.id})">X</button></td></tr>`);}, save:()=>{const id=document.getElementById('cli-id').value,n=document.getElementById('cli-name').value,p=document.getElementById('cli-phone').value;if(!n)return;if(id){const i=db.clients.findIndex(x=>x.id==id);db.clients[i]={id:parseInt(id),name:n,phone:p}}else{db.clients.push({id:Date.now(),name:n,phone:p})}save();Clients.clear();Clients.render();}, edit:(id)=>{const c=db.clients.find(x=>x.id==id);document.getElementById('cli-id').value=c.id;document.getElementById('cli-name').value=c.name;document.getElementById('cli-phone').value=c.phone;}, del:(id)=>{if(confirm('Apagar?')){db.clients=db.clients.filter(x=>x.id!==id);save();Clients.render();}}, clear:()=>{document.getElementById('cli-id').value='';document.getElementById('cli-name').value='';document.getElementById('cli-phone').value='';}};
+        const Suppliers={render:()=>{const t=document.getElementById('sup-table').querySelector('tbody');t.innerHTML='';db.suppliers.forEach(s=>t.innerHTML+=`<tr><td>${s.name}</td><td>${s.contact}</td><td><button class="btn-danger btn-sm" onclick="Suppliers.del(${s.id})">X</button></td></tr>`);}, save:()=>{const n=document.getElementById('sup-name').value,c=document.getElementById('sup-phone').value;if(n){db.suppliers.push({id:Date.now(),name:n,contact:c});save();Suppliers.render();document.getElementById('sup-name').value='';document.getElementById('sup-phone').value='';}}, del:(id)=>{if(confirm('Apagar?')){db.suppliers=db.suppliers.filter(x=>x.id!==id);save();Suppliers.render();}}, clear:()=>{document.getElementById('sup-name').value='';document.getElementById('sup-phone').value='';}};
         const Users={render:()=>{const t=document.getElementById('usr-table').querySelector('tbody');t.innerHTML='';db.users.forEach(u=>{const d=u.id!==1?`<button class="btn-danger btn-sm" onclick="Users.del(${u.id})">X</button>`:'';t.innerHTML+=`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.role}</td><td>${d}</td></tr>`});}, save:()=>{const n=document.getElementById('usr-name').value,e=document.getElementById('usr-email').value,r=document.getElementById('usr-role').value;if(n&&e){db.users.push({id:Date.now(),name:n,email:e,pass:'1234',role:r});save();Users.render();}}, del:(id)=>{if(confirm('Remover?')){db.users=db.users.filter(x=>x.id!==id);save();Users.render();}}};
 
         window.onload=init;
