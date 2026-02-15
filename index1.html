@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>JM Serralheria System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CORE / THEME --- */
+        :root {
+            --primary: #e63946; /* Vermelho Serralheria */
+            --primary-dark: #b91c1c;
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --surface-light: #2a2a2a;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: #333;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; font-size: 14px; }
+        
+        /* --- UTILS --- */
+        .hidden { display: none !important; }
+        .flex { display: flex; gap: 10px; }
+        .col { flex-direction: column; }
+        .row { flex-direction: row; }
+        .center { align-items: center; justify-content: center; }
+        .between { justify-content: space-between; }
+        .w-full { width: 100%; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .bold { font-weight: 600; }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .mt-2 { margin-top: 10px; }
+        .mt-4 { margin-top: 20px; }
+        .mb-2 { margin-bottom: 10px; }
+        .p-2 { padding: 10px; }
+        
+        /* --- UI COMPONENTS --- */
+        button {
+            cursor: pointer; border: none; border-radius: var(--radius);
+            padding: 10px 16px; font-weight: 600; transition: 0.2s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        button:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: black; }
+        .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .btn-ghost { background: transparent; color: var(--text-muted); }
+        .btn-icon { width: 36px; height: 36px; padding: 0; border-radius: 50%; }
+
+        input, select, textarea {
+            background: var(--surface-light); border: 1px solid var(--border);
+            color: var(--text); padding: 12px; border-radius: var(--radius);
+            width: 100%; outline: none; font-size: 1rem;
+        }
+        input:focus { border-color: var(--primary); }
+
+        .card {
+            background: var(--surface); border-radius: var(--radius);
+            padding: 16px; margin-bottom: 16px; border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .badge {
+            padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;
+        }
+        .badge.pendente { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge.aprovado { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge.entregue { background: var(--surface-light); color: var(--text-muted); border: 1px solid var(--border); }
+
+        /* --- LAYOUT --- */
+        #sidebar {
+            width: 260px; background: var(--surface); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; z-index: 100; transition: 0.3s;
+        }
+        .brand { padding: 20px; font-size: 1.2rem; font-weight: 800; color: var(--primary); border-bottom: 1px solid var(--border); letter-spacing: 1px; }
+        .menu { flex: 1; overflow-y: auto; padding: 10px; }
+        .menu-item {
+            padding: 14px; margin-bottom: 4px; border-radius: var(--radius);
+            color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 12px;
+            transition: 0.2s; font-size: 0.95rem;
+        }
+        .menu-item:hover, .menu-item.active { background: var(--surface-light); color: var(--text); }
+        .menu-item.active { border-left: 3px solid var(--primary); background: rgba(230, 57, 70, 0.1); color: var(--primary); }
+        
+        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); position: relative; }
+        header {
+            height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 16px; justify-content: space-between;
+        }
+        .content-scroll { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 80px; }
+
+        /* --- GRID DASHBOARD --- */
+        .grid-dash { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .stat-card { background: var(--surface); padding: 16px; border-radius: var(--radius); border-left: 4px solid var(--primary); }
+        .stat-val { font-size: 1.5rem; font-weight: bold; margin-top: 5px; }
+        .stat-label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+
+        /* --- TABLES --- */
+        .table-container { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { text-align: left; padding: 12px; background: var(--surface-light); font-size: 0.8rem; color: var(--text-muted); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
+        tr:last-child td { border-bottom: none; }
+
+        /* --- CANVAS (PROJETISTA) --- */
+        .canvas-container { 
+            background: #252525; border-radius: var(--radius); 
+            display: flex; justify-content: center; align-items: center; 
+            padding: 10px; overflow: hidden; border: 1px solid var(--border);
+        }
+        canvas { max-width: 100%; height: auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+
+        /* --- OTIMIZADOR --- */
+        .bar-visual { height: 30px; background: #333; margin-top: 8px; display: flex; border-radius: 4px; overflow: hidden; }
+        .bar-cut { display: flex; align-items: center; justify-content: center; font-size: 10px; color: black; font-weight: bold; border-right: 1px solid rgba(0,0,0,0.2); transition: 0.3s; }
+        .bar-waste { background: var(--danger); opacity: 0.5; }
+
+        /* --- MOBILE RESPONSIVE --- */
+        .mobile-btn { display: none; background: transparent; color: var(--text); font-size: 1.2rem; }
+        
+        @media (max-width: 768px) {
+            #sidebar { position: fixed; left: -260px; height: 100%; bottom: 0; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+            #sidebar.open { left: 0; }
+            .mobile-btn { display: block; }
+            .grid-dash { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-box { background: var(--surface); padding: 20px; border-radius: 12px; width: 95%; max-width: 500px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            body { background: white; color: black; height: auto; overflow: visible; display: block; }
+            #sidebar, header, .no-print, .mobile-btn { display: none !important; }
+            .card { border: none; box-shadow: none; padding: 0; }
+            .invoice-box { border: 1px solid #ddd; padding: 20px; margin: 0; }
+            * { color: black !important; background: transparent !important; }
+            .text-success, .text-danger { color: black !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <div class="brand">
+            <i class="fas fa-hammer"></i> JM SYSTEM
+        </div>
+        <div class="menu">
+            <div class="menu-item active" onclick="App.nav('dashboard')"><i class="fas fa-chart-pie"></i> Visão Geral</div>
+            <div class="menu-item" onclick="App.nav('vendas')"><i class="fas fa-cash-register"></i> PDV (Loja)</div>
+            <div class="menu-item" onclick="App.nav('orcamentos')"><i class="fas fa-file-invoice"></i> Orçamentos & Obras</div>
+            <div class="menu-item" onclick="App.nav('projetista')"><i class="fas fa-drafting-compass"></i> Projetista 2D</div>
+            <div class="menu-item" onclick="App.nav('otimizador')"><i class="fas fa-cut"></i> Otimizador de Corte</div>
+            <div class="menu-item" onclick="App.nav('estoque')"><i class="fas fa-boxes"></i> Estoque</div>
+            <div class="menu-item" onclick="App.nav('financeiro')"><i class="fas fa-wallet"></i> Financeiro</div>
+            <div class="menu-item" onclick="App.nav('clientes')"><i class="fas fa-users"></i> Clientes</div>
+        </div>
+        <div class="p-2 text-center text-muted" style="font-size: 0.8rem; border-top: 1px solid var(--border);">
+            v2.5 Supreme<br>Offline Ready
+        </div>
+    </nav>
+
+    <main>
+        <header>
+            <button class="mobile-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+            <h3 id="page-title">Visão Geral</h3>
+            <div class="flex center">
+                <button class="btn-ghost" onclick="App.backup()"><i class="fas fa-cloud-download-alt"></i></button>
+            </div>
+        </header>
+
+        <div id="content" class="content-scroll">
+            </div>
+    </main>
+
+    <div id="modal-invoice" class="modal-overlay hidden">
+        <div class="modal-box invoice-box" style="background: white; color: black; max-width: 800px;">
+            <div class="flex between center mb-2 no-print">
+                <h3>Recibo / Orçamento</h3>
+                <button class="btn-ghost" onclick="closeModal('modal-invoice')"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="invoice-content"></div>
+            <div class="flex mt-4 gap-2 no-print">
+                <button class="btn-primary w-full" onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
+                <button class="btn-success w-full" onclick="Invoice.zap()"><i class="fab fa-whatsapp"></i> Enviar Zap</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STORE (Simulando Banco de Dados) ---
+        const DB_KEY = 'jm_data_v2';
+        
+        let db = {
+            config: { company: "JM Serralheria & Calhas", phone: "14999999999", pix: "jm@email.com" },
+            stock: [
+                { id: 1, name: "Metalon 30x30 18#", type: "barra", size: 6000, qty: 50, price: 85.00, cost: 50.00 },
+                { id: 2, name: "Metalon 50x30 18#", type: "barra", size: 6000, qty: 30, price: 110.00, cost: 70.00 },
+                { id: 3, name: "Chapa Galv. 2mm", type: "m2", size: 0, qty: 100, price: 150.00, cost: 90.00 },
+                { id: 4, name: "Eletrodo 2.5mm", type: "kg", size: 0, qty: 20, price: 45.00, cost: 25.00 },
+                { id: 5, name: "Disco Corte 4.5", type: "un", size: 0, qty: 100, price: 8.00, cost: 3.50 },
+                { id: 6, name: "Fechadura Stam", type: "un", size: 0, qty: 10, price: 65.00, cost: 35.00 },
+                { id: 7, name: "Roldana Portão", type: "un", size: 0, qty: 20, price: 25.00, cost: 12.00 }
+            ],
+            clients: [
+                { id: 1, name: "Fazenda Santa Fé", phone: "14998887777", doc: "0001" },
+                { id: 2, name: "João Pedreiro", phone: "14991112222", doc: "0002" }
+            ],
+            sales: [], // Orçamentos e Vendas
+            cashflow: [] // Movimentações financeiras
+        };
+
+        // --- CORE FUNCTIONS ---
+        const App = {
+            init: () => {
+                const saved = localStorage.getItem(DB_KEY);
+                if (saved) db = JSON.parse(saved);
+                App.nav('dashboard');
+            },
+            save: () => {
+                localStorage.setItem(DB_KEY, JSON.stringify(db));
+            },
+            nav: (screen) => {
+                // UI Toggle
+                document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+                const menuItem = document.querySelector(`.menu-item[onclick="App.nav('${screen}')"]`);
+                if(menuItem) menuItem.classList.add('active');
+                
+                // Mobile Close
+                document.getElementById('sidebar').classList.remove('open');
+                
+                // Set Title
+                const titles = {
+                    dashboard: "Visão Geral", vendas: "PDV (Balcão)", orcamentos: "Orçamentos & Obras",
+                    projetista: "Projetista 2D", otimizador: "Otimizador de Corte", estoque: "Estoque", 
+                    financeiro: "Financeiro", clientes: "Clientes"
+                };
+                document.getElementById('page-title').innerText = titles[screen];
+
+                // Render Content
+                const content = document.getElementById('content');
+                content.innerHTML = Screens[screen]();
+                
+                // Post-Render Scripts
+                if (screen === 'dashboard') Dashboard.renderCharts();
+                if (screen === 'projetista') Designer.init();
+            },
+            backup: () => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "backup_jm_system.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            }
+        };
+
+        // --- SCREENS RENDERERS ---
+        const Screens = {
+            dashboard: () => {
+                const totalVendas = db.sales.reduce((acc, s) => s.status === 'APROVADO' ? acc + s.total : acc, 0);
+                const aReceber = db.sales.reduce((acc, s) => s.status === 'APROVADO' && !s.paid ? acc + (s.total - s.paidAmount) : acc, 0);
+                const pendentes = db.sales.filter(s => s.status === 'PENDENTE').length;
+                const lowStock = db.stock.filter(i => i.qty < 5).length;
+
+                return `
+                    <div class="grid-dash">
+                        <div class="stat-card">
+                            <div class="stat-label">Vendas no Mês</div>
+                            <div class="stat-val text-success">R$ ${totalVendas.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card" style="border-left-color: var(--warning)">
+                            <div class="stat-label">A Receber</div>
+                            <div class="stat-val" style="color: var(--warning)">R$ ${aReceber.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card" style="border-left-color: #3b82f6">
+                            <div class="stat-label">Orçamentos Pendentes</div>
+                            <div class="stat-val" style="color: #3b82f6">${pendentes}</div>
+                        </div>
+                         <div class="stat-card" style="border-left-color: var(--danger)">
+                            <div class="stat-label">Estoque Baixo</div>
+                            <div class="stat-val text-danger">${lowStock} Itens</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 class="mb-2">Últimas Atividades</h4>
+                        ${db.sales.slice(-5).reverse().map(s => `
+                            <div class="flex between center p-2" style="border-bottom:1px solid var(--border)">
+                                <div>
+                                    <div class="bold">${s.clientName}</div>
+                                    <small class="text-muted">${new Date(s.date).toLocaleDateString()} - ${s.type}</small>
+                                </div>
+                                <div class="text-right">
+                                    <div class="bold">R$ ${s.total.toFixed(2)}</div>
+                                    <span class="badge ${s.status.toLowerCase()}">${s.status}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            },
+
+            vendas: () => {
+                return `
+                    <div class="flex col gap-2 h-full">
+                        <div class="card flex gap-2">
+                            <select id="pos-product" class="w-full">
+                                <option value="">Selecione o Produto...</option>
+                                ${db.stock.map(p => `<option value="${p.id}">${p.name} (R$ ${p.price}) - Estoque: ${p.qty}</option>`).join('')}
+                            </select>
+                            <input type="number" id="pos-qty" value="1" style="width: 80px" placeholder="Qtd">
+                            <button class="btn-primary" onclick="POS.add()">Adicionar</button>
+                        </div>
+                        
+                        <div class="card flex col between" style="flex:1">
+                            <div id="pos-cart" style="flex:1; overflow-y:auto;">
+                                <p class="text-center text-muted mt-4">Carrinho vazio</p>
+                            </div>
+                            <div class="mt-4 pt-2" style="border-top:1px solid var(--border)">
+                                <div class="flex between bold" style="font-size:1.2rem">
+                                    <span>Total:</span>
+                                    <span id="pos-total">R$ 0.00</span>
+                                </div>
+                                <button class="btn-success w-full mt-2" onclick="POS.finish()">FINALIZAR VENDA (F10)</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            orcamentos: () => {
+                return `
+                    <div class="flex between center mb-2">
+                        <input type="text" id="search-orc" placeholder="Buscar cliente..." style="max-width:200px">
+                        <button class="btn-primary" onclick="Budget.new()"><i class="fas fa-plus"></i> Novo Orçamento</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Cliente</th><th>Tipo</th><th>Total</th><th>Status</th><th>Ações</th></tr></thead>
+                            <tbody>
+                                ${db.sales.slice().reverse().map(s => `
+                                    <tr>
+                                        <td>#${s.id}</td>
+                                        <td>${s.clientName}</td>
+                                        <td>${s.type}</td>
+                                        <td>R$ ${s.total.toFixed(2)}</td>
+                                        <td><span class="badge ${s.status.toLowerCase()}">${s.status}</span></td>
+                                        <td>
+                                            <button class="btn-ghost" onclick="Invoice.show(${s.id})"><i class="fas fa-eye"></i></button>
+                                            ${s.status === 'PENDENTE' ? `<button class="btn-success" onclick="Budget.approve(${s.id})"><i class="fas fa-check"></i></button>` : ''}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            },
+
+            projetista: () => {
+                return `
+                    <div class="flex col gap-2">
+                        <div class="card">
+                            <div class="flex gap-2 wrap">
+                                <select id="design-type" onchange="Designer.draw()">
+                                    <option value="portao">Portão Basculante</option>
+                                    <option value="barracao">Barracão (Estrutura)</option>
+                                    <option value="grade">Grade Simples</option>
+                                </select>
+                                <input type="number" id="design-w" placeholder="Largura (m)" value="3.00" oninput="Designer.draw()">
+                                <input type="number" id="design-h" placeholder="Altura (m)" value="2.50" oninput="Designer.draw()">
+                            </div>
+                        </div>
+                        
+                        <div class="flex wrap gap-2">
+                            <div class="canvas-container" style="flex:2; min-width:300px">
+                                <canvas id="main-canvas" width="600" height="400"></canvas>
+                            </div>
+                            <div class="card" style="flex:1; min-width:250px">
+                                <h4>Estimativa de Material</h4>
+                                <div id="design-materials" class="mt-2 text-muted" style="font-size:0.9rem">Calculando...</div>
+                                <div class="mt-4 pt-2" style="border-top:1px solid var(--border)">
+                                    <div class="flex between bold">
+                                        <span>Custo Est.:</span>
+                                        <span id="design-cost" class="text-warning">R$ 0.00</span>
+                                    </div>
+                                    <button class="btn-primary w-full mt-2" onclick="Designer.toBudget()">Gerar Orçamento</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            otimizador: () => {
+                return `
+                    <div class="card">
+                        <h4>Otimizador de Corte (1D)</h4>
+                        <div class="flex gap-2 mt-2">
+                            <input type="number" id="cut-bar-size" placeholder="Tam. Barra (mm)" value="6000">
+                            <input type="number" id="cut-blade" placeholder="Espessura Lâmina (mm)" value="3">
+                        </div>
+                        <div class="mt-2">
+                            <label>Peças a cortar (mm, separadas por vírgula):</label>
+                            <textarea id="cut-list" rows="3" placeholder="Ex: 1200, 1500, 800, 800, 2000">1200, 1500, 800, 800, 2000, 1000, 500</textarea>
+                        </div>
+                        <button class="btn-primary w-full mt-2" onclick="Optimizer.calc()"><i class="fas fa-calculator"></i> CALCULAR CORTES</button>
+                    </div>
+                    <div id="cut-results"></div>
+                `;
+            },
+
+            estoque: () => {
+                return `
+                    <div class="flex between center mb-2">
+                        <h4>Inventário Atual</h4>
+                        <button class="btn-primary" onclick="alert('Funcionalidade de Adicionar Item simplificada para demo.')"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Item</th><th>Tipo</th><th>Preço</th><th>Qtd</th><th>Ação</th></tr></thead>
+                            <tbody>
+                                ${db.stock.map(p => `
+                                    <tr>
+                                        <td>${p.name}</td>
+                                        <td>${p.type}</td>
+                                        <td>R$ ${p.price.toFixed(2)}</td>
+                                        <td class="${p.qty < 5 ? 'text-danger bold' : ''}">${p.qty}</td>
+                                        <td><button class="btn-ghost"><i class="fas fa-edit"></i></button></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            },
+            
+            financeiro: () => {
+                const entradas = db.cashflow.filter(c => c.type === 'in').reduce((a, b) => a + b.val, 0);
+                const saidas = db.cashflow.filter(c => c.type === 'out').reduce((a, b) => a + b.val, 0);
+                return `
+                    <div class="grid-dash">
+                        <div class="stat-card">
+                            <div class="stat-label">Saldo em Caixa</div>
+                            <div class="stat-val ${(entradas-saidas) >= 0 ? 'text-success' : 'text-danger'}">R$ ${(entradas-saidas).toFixed(2)}</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>Movimentações</h4>
+                        <table class="mt-2">
+                            ${db.cashflow.slice().reverse().map(c => `
+                                <tr>
+                                    <td>${new Date(c.date).toLocaleDateString()}</td>
+                                    <td>${c.desc}</td>
+                                    <td class="text-right ${c.type === 'in' ? 'text-success' : 'text-danger'}">
+                                        ${c.type === 'in' ? '+' : '-'} R$ ${c.val.toFixed(2)}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                `;
+            },
+            
+            clientes: () => {
+                return `
+                    <div class="card">
+                        <h4>Meus Clientes</h4>
+                         <table class="mt-2">
+                            ${db.clients.map(c => `
+                                <tr>
+                                    <td><b>${c.name}</b><br><small class="text-muted">${c.phone}</small></td>
+                                    <td class="text-right"><button class="btn-ghost"><i class="fab fa-whatsapp"></i></button></td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                `
+            }
+        };
+
+        // --- LOGIC MODULES ---
+        
+        // 1. POS (POINT OF SALE)
+        let posCart = [];
+        const POS = {
+            add: () => {
+                const prodId = parseInt(document.getElementById('pos-product').value);
+                const qty = parseFloat(document.getElementById('pos-qty').value);
+                if(!prodId || qty <= 0) return alert("Selecione produto e quantidade");
+
+                const product = db.stock.find(p => p.id === prodId);
+                if(product.qty < qty) return alert("Estoque insuficiente!");
+
+                posCart.push({ ...product, saleQty: qty, total: product.price * qty });
+                POS.renderCart();
+            },
+            renderCart: () => {
+                const el = document.getElementById('pos-cart');
+                if(posCart.length === 0) { el.innerHTML = '<p class="text-center text-muted mt-4">Carrinho vazio</p>'; return; }
+                
+                el.innerHTML = posCart.map((item, idx) => `
+                    <div class="flex between center p-2 bg-surface-light mb-2 radius">
+                        <div><b>${item.name}</b><br><small>${item.saleQty} x R$ ${item.price}</small></div>
+                        <div class="text-right">
+                            <div>R$ ${item.total.toFixed(2)}</div>
+                            <button class="btn-ghost text-danger" onclick="POS.remove(${idx})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                const total = posCart.reduce((a, b) => a + b.total, 0);
+                document.getElementById('pos-total').innerText = `R$ ${total.toFixed(2)}`;
+            },
+            remove: (idx) => { posCart.splice(idx, 1); POS.renderCart(); },
+            finish: () => {
+                if(posCart.length === 0) return;
+                const total = posCart.reduce((a, b) => a + b.total, 0);
+                
+                // Deduct Stock
+                posCart.forEach(item => {
+                    const stk = db.stock.find(p => p.id === item.id);
+                    stk.qty -= item.saleQty;
+                });
+
+                // Create Sales Record
+                db.sales.push({
+                    id: Date.now(), date: new Date().toISOString(),
+                    type: "VENDA_BALCAO", clientName: "Consumidor Final",
+                    items: [...posCart], total: total, status: "APROVADO", paid: true, paidAmount: total
+                });
+
+                // Cashflow
+                db.cashflow.push({ date: new Date().toISOString(), desc: "Venda Loja", type: "in", val: total });
+
+                App.save();
+                posCart = [];
+                POS.renderCart();
+                alert("Venda realizada com sucesso!");
+                App.nav('vendas'); // refresh stock select
+            }
+        };
+
+        // 2. DESIGNER (PROJETISTA 2D)
+        const Designer = {
+            init: () => { Designer.draw(); },
+            draw: () => {
+                const canvas = document.getElementById('main-canvas');
+                if(!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const type = document.getElementById('design-type').value;
+                const w = parseFloat(document.getElementById('design-w').value);
+                const h = parseFloat(document.getElementById('design-h').value);
+                
+                // Clear
+                ctx.fillStyle = '#252525';
+                ctx.fillRect(0,0, canvas.width, canvas.height);
+                
+                // Scale factor to fit canvas
+                const scale = Math.min((canvas.width - 40) / w, (canvas.height - 40) / h);
+                const startX = 20;
+                const startY = canvas.height - 20;
+
+                ctx.strokeStyle = '#e63946';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+
+                let materialCost = 0;
+                let description = "";
+
+                if(type === 'portao') {
+                    // Draw Frame
+                    ctx.rect(startX, startY - (h*scale), w*scale, h*scale);
+                    // Draw Ribs (horizontal)
+                    for(let i=1; i<5; i++) {
+                        let y = startY - ((h/5)*i)*scale;
+                        ctx.moveTo(startX, y);
+                        ctx.lineTo(startX + w*scale, y);
+                    }
+                    description = `Portão Basculante ${w}x${h}m`;
+                    // Estimativa Grosseira: Perimetro + costelas + chapa
+                    const metalonM = (h*2 + w*2) + (w * 4); 
+                    const chapaM2 = w * h;
+                    materialCost = (metalonM * 20) + (chapaM2 * 80); // Preços base dummy
+                } 
+                else if (type === 'barracao') {
+                    // Columns
+                    ctx.moveTo(startX, startY); ctx.lineTo(startX, startY - h*scale);
+                    ctx.moveTo(startX + w*scale, startY); ctx.lineTo(startX + w*scale, startY - h*scale);
+                    // Roof (Truss)
+                    ctx.moveTo(startX, startY - h*scale); ctx.lineTo(startX + (w/2)*scale, startY - (h*1.3)*scale);
+                    ctx.lineTo(startX + w*scale, startY - h*scale);
+                    ctx.lineTo(startX, startY - h*scale);
+                    description = `Estrutura Barracão ${w}x${h}m`;
+                    const steelKg = (w * h * 5); // 5kg por m2 ficticio
+                    materialCost = steelKg * 12;
+                }
+                else if (type === 'grade') {
+                    ctx.rect(startX, startY - (h*scale), w*scale, h*scale);
+                    // Verticals
+                    const spacing = 0.15; // 15cm
+                    const bars = Math.floor(w / spacing);
+                    for(let i=1; i<bars; i++) {
+                        let x = startX + (spacing*i)*scale;
+                        ctx.moveTo(x, startY); ctx.lineTo(x, startY - h*scale);
+                    }
+                    description = `Grade ${w}x${h}m`;
+                    materialCost = (bars * h * 15) + (w*2 + h*2)*15;
+                }
+
+                ctx.stroke();
+
+                // Update UI
+                document.getElementById('design-materials').innerText = description;
+                document.getElementById('design-cost').innerText = `R$ ${materialCost.toFixed(2)}`;
+                Designer.tempData = { desc: description, cost: materialCost, w, h };
+            },
+            toBudget: () => {
+                const d = Designer.tempData;
+                // Add to a new Budget
+                const client = prompt("Nome do Cliente:");
+                if(!client) return;
+                
+                const labor = d.cost * 0.8; // Mão de obra 80% do material
+                const total = d.cost + labor;
+
+                db.sales.push({
+                    id: Date.now(), date: new Date().toISOString(),
+                    type: "OBRA", clientName: client,
+                    items: [{ name: d.desc, saleQty: 1, price: d.cost, total: d.cost }],
+                    labor: labor, total: total, status: "PENDENTE", paid: false, paidAmount: 0
+                });
+                App.save();
+                App.nav('orcamentos');
+            }
+        };
+
+        // 3. OPTIMIZER (OTIMIZADOR DE CORTE)
+        const Optimizer = {
+            calc: () => {
+                const barSize = parseFloat(document.getElementById('cut-bar-size').value);
+                const blade = parseFloat(document.getElementById('cut-blade').value);
+                const cutsInput = document.getElementById('cut-list').value;
+                
+                let pieces = cutsInput.split(',').map(Number).sort((a,b) => b-a); // Sort descending (First Fit Decreasing)
+                let bars = [{ free: barSize, cuts: [] }];
+
+                pieces.forEach(p => {
+                    let placed = false;
+                    for(let b of bars) {
+                        if(b.free >= (p + blade)) {
+                            b.cuts.push(p);
+                            b.free -= (p + blade);
+                            placed = true;
+                            break;
+                        }
+                    }
+                    if(!placed) {
+                        bars.push({ free: barSize - (p + blade), cuts: [p] });
+                    }
+                });
+
+                // Render Results
+                const html = bars.map((b, idx) => {
+                    const usedPct = ((barSize - b.free) / barSize) * 100;
+                    return `
+                        <div class="card mt-2">
+                            <div class="flex between text-muted" style="font-size:0.8rem">
+                                <span>Barra ${idx+1}</span>
+                                <span>Sobra: ${b.free.toFixed(1)}mm</span>
+                            </div>
+                            <div class="bar-visual">
+                                ${b.cuts.map(c => {
+                                    const w = (c / barSize) * 100;
+                                    return `<div class="bar-cut" style="width:${w}%; background: hsl(${Math.random()*360}, 70%, 70%)">${c}</div>`;
+                                }).join('')}
+                                <div class="bar-waste" style="flex:1"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('cut-results').innerHTML = `
+                    <h4 class="mt-4">Resultado: ${bars.length} Barras necessárias</h4>
+                    ${html}
+                `;
+            }
+        };
+
+        // 4. BUDGET & INVOICE
+        const Budget = {
+            new: () => { Designer.toBudget(); }, // Simplificado: usa o projetista ou cria vazio
+            approve: (id) => {
+                if(!confirm("Aprovar orçamento e reservar estoque?")) return;
+                const sale = db.sales.find(s => s.id === id);
+                sale.status = "APROVADO";
+                // Simulação: Deduzir itens genéricos do estoque se mapeado (futuro)
+                App.save();
+                App.nav('orcamentos');
+            }
+        };
+
+        const Invoice = {
+            show: (id) => {
+                const s = db.sales.find(s => s.id === id);
+                const html = `
+                    <div class="text-center mb-4 pb-2" style="border-bottom: 1px solid #eee">
+                        <h2 style="color:var(--primary)">${db.config.company}</h2>
+                        <p class="text-muted">Orçamento #${s.id}</p>
+                    </div>
+                    <div class="flex between mb-4">
+                        <div><b>Cliente:</b> ${s.clientName}</div>
+                        <div><b>Data:</b> ${new Date(s.date).toLocaleDateString()}</div>
+                    </div>
+                    <table class="w-full mb-4">
+                        <tr style="background:#f9f9f9"><th>Descrição</th><th class="text-right">Total</th></tr>
+                        ${s.items.map(i => `<tr><td>${i.name} x${i.saleQty}</td><td class="text-right">R$ ${i.total.toFixed(2)}</td></tr>`).join('')}
+                        ${s.labor ? `<tr><td>Mão de Obra / Serviços</td><td class="text-right">R$ ${s.labor.toFixed(2)}</td></tr>` : ''}
+                    </table>
+                    <div class="text-right bold" style="font-size:1.5rem">TOTAL: R$ ${s.total.toFixed(2)}</div>
+                    <div class="mt-4 p-2 bg-surface-light text-center" style="font-size:0.8rem">
+                        Este documento não possui valor fiscal.<br>Pagamento via PIX: ${db.config.pix}
+                    </div>
+                `;
+                document.getElementById('invoice-content').innerHTML = html;
+                document.getElementById('modal-invoice').classList.remove('hidden');
+                Invoice.current = s;
+            },
+            zap: () => {
+                const s = Invoice.current;
+                const msg = `Olá ${s.clientName}, segue resumo do orçamento JM System:\nValor Total: R$ ${s.total.toFixed(2)}\nFico no aguardo!`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+        };
+
+        // --- UTILS UI ---
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // --- INIT ---
+        window.onload = App.init;
+
+    </script>
+</body>
+</html>
